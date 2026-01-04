@@ -38,6 +38,8 @@ const (
 	ReasoningMedium ModelReasoningEffort = "medium"
 	// ReasoningHigh uses high reasoning effort.
 	ReasoningHigh ModelReasoningEffort = "high"
+	// ReasoningXHigh uses extra-high reasoning effort.
+	ReasoningXHigh ModelReasoningEffort = "xhigh"
 )
 
 // CodexOptions configures a Codex client.

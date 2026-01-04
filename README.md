@@ -142,7 +142,7 @@ thread := client.StartThread(
     codex.WithSandboxMode(codex.SandboxWorkspaceWrite),
     codex.WithWorkingDirectory("/path/to/project"),
     codex.WithSkipGitRepoCheck(),
-    codex.WithModelReasoningEffort(codex.ReasoningHigh),
+    codex.WithModelReasoningEffort(codex.ReasoningXHigh),
     codex.WithNetworkAccess(true),
     codex.WithWebSearch(true),
     codex.WithApprovalPolicy(codex.ApprovalOnRequest),
@@ -158,7 +158,7 @@ thread := client.StartThread(
 | `WithSandboxMode(mode)` | Control filesystem access (`SandboxReadOnly`, `SandboxWorkspaceWrite`, `SandboxDangerFullAccess`) |
 | `WithWorkingDirectory(dir)` | Set the working directory |
 | `WithSkipGitRepoCheck()` | Skip Git repository validation |
-| `WithModelReasoningEffort(effort)` | Set reasoning intensity (`ReasoningMinimal`, `ReasoningLow`, `ReasoningMedium`, `ReasoningHigh`) |
+| `WithModelReasoningEffort(effort)` | Set reasoning intensity (`ReasoningMinimal`, `ReasoningLow`, `ReasoningMedium`, `ReasoningHigh`, `ReasoningXHigh`) |
 | `WithNetworkAccess(enabled)` | Enable/disable network access |
 | `WithWebSearch(enabled)` | Enable/disable web search |
 | `WithApprovalPolicy(policy)` | Set approval mode (`ApprovalNever`, `ApprovalOnRequest`, `ApprovalOnFailure`, `ApprovalUntrusted`) |

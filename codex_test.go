@@ -253,7 +253,7 @@ func TestOptionsApply(t *testing.T) {
 		WithSandboxMode(SandboxWorkspaceWrite),
 		WithWorkingDirectory("/work"),
 		WithSkipGitRepoCheck(),
-		WithModelReasoningEffort(ReasoningHigh),
+		WithModelReasoningEffort(ReasoningXHigh),
 		WithNetworkAccess(true),
 		WithWebSearch(false),
 		WithApprovalPolicy(ApprovalOnRequest),
@@ -271,8 +271,8 @@ func TestOptionsApply(t *testing.T) {
 	if !topts.SkipGitRepoCheck {
 		t.Error("expected SkipGitRepoCheck to be true")
 	}
-	if topts.ModelReasoningEffort != ReasoningHigh {
-		t.Errorf("expected ModelReasoningEffort %q, got %q", ReasoningHigh, topts.ModelReasoningEffort)
+	if topts.ModelReasoningEffort != ReasoningXHigh {
+		t.Errorf("expected ModelReasoningEffort %q, got %q", ReasoningXHigh, topts.ModelReasoningEffort)
 	}
 	if topts.NetworkAccessEnabled == nil || !*topts.NetworkAccessEnabled {
 		t.Error("expected NetworkAccessEnabled to be true")
