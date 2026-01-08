@@ -99,6 +99,23 @@ if err != nil {
 fmt.Println(turn.FinalResponse) // JSON conforming to schema
 ```
 
+To mirror the TypeScript example that derives a schema from Zod, you can generate a
+JSON Schema from Go structs using [`github.com/invopop/jsonschema`](https://github.com/invopop/jsonschema):
+
+```go
+type RepoStatus struct {
+    Summary string `json:"summary"`
+    Status  string `json:"status" jsonschema:"enum=ok,enum=action_required"`
+}
+
+schema := (&jsonschema.Reflector{
+    RequiredFromJSONSchemaTags: true,
+}).Reflect(&RepoStatus{})
+
+turn, err := thread.Run(ctx, codex.Text("Summarize repository status"),
+    codex.WithOutputSchema(schema))
+```
+
 ## Attaching Images
 
 Provide structured input when you need to include images alongside text:
@@ -215,8 +232,18 @@ See the [examples](./examples) directory for complete working examples:
 
 - [basic_streaming](./examples/basic_streaming) - Interactive streaming chat
 - [structured_output](./examples/structured_output) - JSON schema-constrained output
+- [structured_output_jsonschema](./examples/structured_output_jsonschema) - Generate schemas from Go structs (parity with TS `structured_output_zod.ts`)
 - [resume_thread](./examples/resume_thread) - Thread persistence and resumption
 - [with_images](./examples/with_images) - Image input handling
+
+All examples honor the `CODEX_EXECUTABLE` environment variable (or a local `codex-rs/target/debug/codex`
+build) via shared helper options, matching the TypeScript samples' `codexPathOverride`. They will also
+work with any authentication you have already configured for the `codex` CLI; set `CODEX_API_KEY` only
+if you want to override that.
+
+```bash
+go run ./examples/basic_streaming
+```
 
 ## API Reference
 

@@ -186,24 +186,29 @@ func (e *Exec) Run(ctx context.Context, args ExecArgs) (*ExecStream, error) {
 	}()
 
 	waitFn := func() error {
+		// Wait for process to complete
 		err := cmd.Wait()
-		writeErr := <-writeErrCh
-		<-stderrDone
 
+		// Check if write to stdin failed
+		writeErr := <-writeErrCh
 		if writeErr != nil {
 			return fmt.Errorf("write to codex stdin: %w", writeErr)
 		}
 
+		// Ensure stderr is fully drained before checking exit status
+		<-stderrDone
+
+		// Check if process exited with error
 		if err != nil {
 			var exitErr *exec.ExitError
 			if errors.As(err, &exitErr) {
 				stderrText := strings.TrimSpace(stderrBuf.String())
 				if stderrText != "" {
-					return fmt.Errorf("codex exec failed: %s: %s", exitErr, stderrText)
+					return fmt.Errorf("codex exec exited with code %d: %s", exitErr.ExitCode(), stderrText)
 				}
-				return fmt.Errorf("codex exec failed: %w", err)
+				return fmt.Errorf("codex exec exited with code %d", exitErr.ExitCode())
 			}
-			return err
+			return fmt.Errorf("codex exec failed: %w", err)
 		}
 
 		return nil

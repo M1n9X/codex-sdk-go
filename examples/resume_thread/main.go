@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	"github.com/M1n9X/codex-sdk-go"
+	"github.com/M1n9X/codex-sdk-go/examples/internal/exampleutil"
 )
 
 func main() {
@@ -26,7 +27,7 @@ func run() error {
 	defer cancel()
 
 	// Create Codex client
-	client, err := codex.New()
+	client, err := codex.New(exampleutil.ClientOptions()...)
 	if err != nil {
 		return fmt.Errorf("create codex client: %w", err)
 	}
