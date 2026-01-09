@@ -1,7 +1,6 @@
 package codex
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"strings"
@@ -73,13 +72,25 @@ func normalizeInput(input Input) (prompt string, images []string, err error) {
 			promptParts = append(promptParts, part.Text)
 		case InputLocalImage:
 			if part.Path == "" {
-				return "", nil, fmt.Errorf("input part %d: local image path must be set", idx)
+				return "", nil, &ErrInvalidInput{
+					Field:  "image path",
+					Value:  "",
+					Reason: fmt.Sprintf("input part %d: local image path must be set", idx),
+				}
 			}
 			images = append(images, part.Path)
 		case "":
-			return "", nil, fmt.Errorf("input part %d: type must be set", idx)
+			return "", nil, &ErrInvalidInput{
+				Field:  "input type",
+				Value:  "",
+				Reason: fmt.Sprintf("input part %d: type must be set", idx),
+			}
 		default:
-			return "", nil, fmt.Errorf("input part %d: unsupported type %q", idx, part.Type)
+			return "", nil, &ErrInvalidInput{
+				Field:  "input type",
+				Value:  string(part.Type),
+				Reason: fmt.Sprintf("input part %d: unsupported type", idx),
+			}
 		}
 	}
 
@@ -108,7 +119,10 @@ func validateOutputSchema(schema any) error {
 			return nil
 		}
 		if v.Type().Key().Kind() != reflect.String {
-			return errors.New("output schema must be a JSON object with string keys")
+			return &ErrInvalidInput{
+				Field:  "output schema",
+				Reason: "must be a JSON object with string keys",
+			}
 		}
 		return nil
 	case reflect.Struct:
@@ -119,6 +133,9 @@ func validateOutputSchema(schema any) error {
 		}
 		return validateOutputSchema(v.Interface())
 	default:
-		return errors.New("output schema must be a JSON object, not a primitive or array")
+		return &ErrInvalidInput{
+			Field:  "output schema",
+			Reason: "must be a JSON object, not a primitive or array",
+		}
 	}
 }

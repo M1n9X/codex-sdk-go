@@ -70,12 +70,16 @@ type StreamedTurn struct {
 type RunStreamedResult = StreamedTurn
 
 // Wait blocks until the underlying run completes and returns any terminal error.
+// This method is safe to call concurrently from multiple goroutines.
+// Subsequent calls will return the same error as the first call.
 func (s *StreamedTurn) Wait() error {
 	s.waitOnce.Do(func() {
 		if s.waitFn != nil {
 			s.waitErr = s.waitFn()
 		}
 	})
+	// Safe to read waitErr here because sync.Once guarantees that the Do function
+	// has completed before returning, and all subsequent calls will see the same value.
 	return s.waitErr
 }
 

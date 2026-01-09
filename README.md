@@ -196,6 +196,29 @@ client, err := codex.New(
 )
 ```
 
+## Error Handling
+
+Errors are structured so you can branch on type:
+
+```go
+turn, err := thread.Run(ctx, codex.Text("hello"))
+if err != nil {
+    var execErr *codex.ErrExecFailed
+    switch {
+    case errors.Is(err, codex.ErrCodexNotFound):
+        log.Fatal("install the codex CLI or add it to PATH")
+    case errors.As(err, &execErr):
+        log.Fatalf("codex exited with %d: %s", execErr.ExitCode, execErr.Stderr)
+    default:
+        log.Fatal(err)
+    }
+}
+```
+
+- `ErrCodexNotFound` – returned when the CLI binary is missing.
+- `*ErrExecFailed` – returned when the CLI exits non-zero; exposes `ExitCode`, `Stderr`, and `Unwrap()`.
+- `*ErrInvalidInput` – returned for invalid inputs or output schemas with `Field`, `Value`, `Reason`.
+
 ## Event Types
 
 The SDK emits the following event types during streaming:

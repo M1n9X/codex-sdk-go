@@ -203,10 +203,11 @@ func (e *Exec) Run(ctx context.Context, args ExecArgs) (*ExecStream, error) {
 			var exitErr *exec.ExitError
 			if errors.As(err, &exitErr) {
 				stderrText := strings.TrimSpace(stderrBuf.String())
-				if stderrText != "" {
-					return fmt.Errorf("codex exec exited with code %d: %s", exitErr.ExitCode(), stderrText)
+				return &ErrExecFailed{
+					ExitCode: exitErr.ExitCode(),
+					Stderr:   stderrText,
+					Err:      err,
 				}
-				return fmt.Errorf("codex exec exited with code %d", exitErr.ExitCode())
 			}
 			return fmt.Errorf("codex exec failed: %w", err)
 		}
@@ -265,7 +266,7 @@ func findCodexPath() (string, error) {
 
 	codexPath, err := exec.LookPath("codex")
 	if err != nil {
-		return "", fmt.Errorf("find codex binary: %w (ensure codex is installed and in PATH)", err)
+		return "", fmt.Errorf("%w: %v (ensure codex is installed and in PATH)", ErrCodexNotFound, err)
 	}
 	return codexPath, nil
 }

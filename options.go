@@ -65,23 +65,32 @@ type CodexOptions struct {
 type Option func(*CodexOptions)
 
 // WithCodexPath sets a custom path to the codex binary.
+// No-op when path is empty.
 func WithCodexPath(path string) Option {
 	return func(o *CodexOptions) {
-		o.CodexPath = path
+		if path != "" {
+			o.CodexPath = path
+		}
 	}
 }
 
 // WithBaseURL sets the API base URL.
+// No-op when url is empty.
 func WithBaseURL(url string) Option {
 	return func(o *CodexOptions) {
-		o.BaseURL = url
+		if url != "" {
+			o.BaseURL = url
+		}
 	}
 }
 
 // WithAPIKey sets the API key.
+// No-op when key is empty.
 func WithAPIKey(key string) Option {
 	return func(o *CodexOptions) {
-		o.APIKey = key
+		if key != "" {
+			o.APIKey = key
+		}
 	}
 }
 
@@ -129,9 +138,12 @@ type ThreadOptions struct {
 type ThreadOption func(*ThreadOptions)
 
 // WithModel sets the model identifier.
+// No-op when model is empty.
 func WithModel(model string) ThreadOption {
 	return func(o *ThreadOptions) {
-		o.Model = model
+		if model != "" {
+			o.Model = model
+		}
 	}
 }
 
@@ -143,9 +155,12 @@ func WithSandboxMode(mode SandboxMode) ThreadOption {
 }
 
 // WithWorkingDirectory sets the working directory.
+// No-op when dir is empty.
 func WithWorkingDirectory(dir string) ThreadOption {
 	return func(o *ThreadOptions) {
-		o.WorkingDirectory = dir
+		if dir != "" {
+			o.WorkingDirectory = dir
+		}
 	}
 }
 
